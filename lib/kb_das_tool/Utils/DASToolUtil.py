@@ -304,8 +304,11 @@ class DASToolUtil:
         # contig_file = self.get_contig_file(params.get('assembly_ref'))
         # params['contig_file_path'] = contig_file
 
-        #params['binned_contig_list_file'] = binned_contig_list_file
+        params['binned_contig_list_file'] = binned_contig_list_file
 
+
+        for binned_contigs_object in binned_contig_list_file:
+            print("\n\nbinned_contigs_object: {}" binned_contigs_object)
         #self.mgu.binned_contigs_to_file(params)
 
         result_directory = os.path.join(self.scratch, str("dastool_output_dir"))
