@@ -28,6 +28,7 @@ class DASToolUtil:
         self.callback_url = config['SDK_CALLBACK_URL']
         self.scratch = config['scratch']
         self.shock_url = config['shock-url']
+        self.ws_url = config['workspace-url']
         self.dfu = DataFileUtil(self.callback_url)
         self.ru = ReadsUtils(self.callback_url)
         self.au = AssemblyUtil(self.callback_url)
@@ -115,32 +116,6 @@ class DASToolUtil:
         out,err = self.run_command(command)
 
         return assembly_clean
-
-# list stage_reads_list_file
-    def generate_input_binned_contig_list_command(self, reads_list):
-        """
-        generate_input_binned_contig_list_command: download fastq file associated to reads to scratch area
-                          and return result_file_path
-        """
-
-        log('Processing reads object list: {}'.format(reads_list))
-
-        result_file_path = []
-
-        # getting from workspace and writing to scratch. The 'reads' dictionary now has file paths to scratch.
-        reads = self.ru.download_reads({'read_libraries': reads_list, 'interleaved': None})['files']
-
-        # reads_list is the list of file paths on workspace? (i.e. 12804/1/1).
-        # "reads" is the hash of hashes where key is "12804/1/1" or in this case, read_obj and
-        # "files" is the secondary key. The tertiary keys are "fwd" and "rev", as well as others.
-        for read_obj in reads_list:
-            files = reads[read_obj]['files']    # 'files' is dictionary where 'fwd' is key of file path on scratch.
-            result_file_path.append(files['fwd'])
-            if 'rev' in files and files['rev'] is not None:
-                result_file_path.append(files['rev'])
-
-        #return result_file_path
-        return binned_contig_files, binned_contig_names # comma separated lists of input files or names
 
 
     def generate_das_tool_command(self, params):
@@ -324,15 +299,16 @@ class DASToolUtil:
 
         self.validate_run_das_tool_params(params)
 
-        contig_file = self.get_contig_file(params.get('assembly_ref'))
-        params['contig_file_path'] = contig_file
+        print("\n\nFinished running validate_run_das_tool_params")
+        #
+        # contig_file = self.get_contig_file(params.get('assembly_ref'))
+        # params['contig_file_path'] = contig_file
 
-        binned_contig_list_file = self.generate_input_binned_contig_list_command(params.get('binned_contig_name'))
-        params['binned_contig_list_file'] = binned_contig_list_file
+        #params['binned_contig_list_file'] = binned_contig_list_file
 
-        self.mgu.binned_contigs_to_file(params)
+        #self.mgu.binned_contigs_to_file(params)
 
-        result_directory = os.path.join(self.scratch, str("concoct_output_dir"))
+        result_directory = os.path.join(self.scratch, str("dastool_output_dir"))
 
         params['result_directory'] = result_directory
 
@@ -344,33 +320,34 @@ class DASToolUtil:
 
 
         #run concoct
-        command = self.generate_das_tool_command(params)
-
-        self.run_command(command)
+        # command = self.generate_das_tool_command(params)
+        #
+        # self.run_command(command)
 
         os.chdir(cwd)
         log('changing working dir to {}'.format(cwd))
 
         log('Saved result files to: {}'.format(result_directory))
         log('Generated files:\n{}'.format('\n'.join(os.listdir(result_directory))))
+        #
+        # generate_binned_contig_param = {
+        #     'file_directory': result_directory,
+        #     'assembly_ref': params.get('assembly_ref'),
+        #     'binned_contig_name': params.get('binned_contig_name'),
+        #     'workspace_name': params.get('workspace_name')
+        # }
+        #
+        # binned_contig_obj_ref = self.mgu.file_to_binned_contigs(
+        #                             generate_binned_contig_param).get('binned_contig_obj_ref')
+        #
+        # reportVal = self.generate_report(binned_contig_obj_ref, result_directory, params)
 
-        generate_binned_contig_param = {
-            'file_directory': result_directory,
-            'assembly_ref': params.get('assembly_ref'),
-            'binned_contig_name': params.get('binned_contig_name'),
-            'workspace_name': params.get('workspace_name')
-        }
-
-        binned_contig_obj_ref = self.mgu.file_to_binned_contigs(
-                                    generate_binned_contig_param).get('binned_contig_obj_ref')
-
-        reportVal = self.generate_report(binned_contig_obj_ref, result_directory, params)
-
+        binned_contig_obj_ref = 'test'
         returnVal = {
             'result_directory': result_directory,
             'binned_contig_obj_ref': binned_contig_obj_ref
         }
 
-        returnVal.update(reportVal)
+        #returnVal.update(reportVal)
 
         return returnVal
