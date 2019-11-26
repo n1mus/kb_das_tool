@@ -44,7 +44,7 @@ class kb_das_toolTest(unittest.TestCase):
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
         suffix = int(time.time() * 1000)
         cls.wsName = "test_kb_das_tool_" + str(suffix)
-        ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
+        # ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
     @classmethod
     def tearDownClass(cls):
