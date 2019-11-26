@@ -15,26 +15,33 @@ module kb_das_tool {
 
     /*
         required params:
-        assembly_ref: Genome assembly object reference
-        binned_contig_name: BinnedContig object name and output file header
+        binned_contig_names: list of BinnedContig object names
         workspace_name: the name of the workspace it gets saved to.
 
         optional params:
-        thread: number of threads; default 1
-        min_contig_length: minimum contig length; default 1000
-        contig_split_length: length to split long contigs; default 10000
+        search_engine; default diamond
+        score_threshold; default 0.5
+        duplicate_penalty; default 0.6
+        megabin_penalty; default 0.5
+        write_bin_evals; default 1
+        create_plots; default 1
+        write_bins; default 1
+        write_unbinned; default 0
         ref: https://github.com/cmks/DAS_Tool
 
     */
     typedef structure {
-        obj_ref assembly_ref;
-        string binned_contig_name;
+        list<obj_ref> binned_contig_name;
         string workspace_name;
-        list<obj_ref> reads_list;
 
-        int thread;
-        int min_contig_length;
-        int contig_split_length;
+        string search_engine;
+        float score_threshold;
+        float duplicate_penalty;
+        float megabin_penalty;
+        int write_bin_evals;
+        int create_plots;
+        int write_bins;
+        int write_unbinned;
     } DASToolInputParams;
 
     /*

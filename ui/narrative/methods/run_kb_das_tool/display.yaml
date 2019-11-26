@@ -1,40 +1,120 @@
 #
 # define display information
 #
-name: Method Name Here
+name     : Optimize Binned Contigs using DAS Tool - v1.2
+subtitle : Optimize genome bins using a dereplication, aggregation and scoring strategy
+tooltip  : Optimize genome bins using a dereplication, aggregation and scoring strategy
 
-tooltip: |
-    Perform some kind of method
+icon: dastool.png
 
 screenshots: []
 
-icon: icon.png
-
 #
-# define a set of similar apps that might be useful to the user
+# define a set of similar methods that might be useful to the user
 #
 suggestions:
     apps:
         related:
-            [app1, app2]
+            [kb_maxbin, kbase-metabat, kb_concoct]
         next:
-            [app3, app4]
+            [kb_Msuite]
+    methods:
+        related:
+            []
+        next:
+            ["kb_Msuite.run_checkM_lineage_wf"]
 
 #
 # Configure the display and description of parameters
 #
 parameters :
-    parameter_1 :
-        ui-name : |
-            First parameter
-        short-hint : |
-            The first parameter
-        long-hint  : |
-            The first parameter that needs to be entered to drive the method. This might be the first of many.
+    assembly_ref :
+        ui-name : Assembly
+        short-hint : Metagenome assembly object
+        long-hint  : Metagenome assembly that you want to bin
+
+    binned_contig_name :
+        ui-name : Input Binned Contigs
+        short-hint : Input BinnedContig object names
+        long-hint  : The name of the input bin objects
+
+    search_engine :
+        ui-name : Gene Identification Tool
+        short-hint : use diamond (faster) or blast for single copy gene identification (default diamond)
+        long-hint  : use diamond (faster) or blast for single copy gene identification (default diamond)
+
+    score_threshold :
+        ui-name : Score Threshold
+        short-hint : score threshold (default 0.5)
+        long-hint  : score threshold until selection algorithm will keep selecting bins (default 0.5)
+
+    duplicate_penalty :
+        ui-name : Duplicate Penalty
+        short-hint : duplicate penalty (default 0.6)
+        long-hint  : penalty for duplicate single copy genes per bin (weight b; default 0.6)
+
+    megabin_penalty :
+        ui-name : Megabin Penalty
+        short-hint : megabin penalty (default 0.5)
+        long-hint  : penalty for megabins (weight c; default 0.5)
+
+    write_bin_evals :
+        ui-name : Write Bin Evals
+        short-hint : write evaluation for each input bin set (default yes)
+        long-hint  : write evaluation for each input bin set (default yes)
+
+    create_plots :
+        ui-name : Create Plots
+        short-hint : Create binning performance plots (default yes)
+        long-hint  : Create binning performance plots (default yes)
+
+    write_bins :
+        ui-name : Write Bins
+        short-hint : Export bins as fasta files (default yes)
+        long-hint  : Export bins as fasta files (default yes)
+
+    write_unbinned :
+        ui-name : Write Unbinned
+        short-hint : Export unbinned as fasta file (default no)
+        long-hint  : Export unbinned as fasta file (default no)
 
 description : |
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pulvinar efficitur felis, quis tincidunt sem congue at. Vivamus ornare feugiat faucibus. Fusce tincidunt mattis nunc, nec varius purus convallis quis. Nulla facilisi. In at magna dolor. Suspendisse sit amet felis at arcu auctor dapibus vitae pharetra dui. Nam semper mi quis tortor fermentum mollis. Donec a arcu pharetra, rutrum dolor vitae, rutrum mauris. Donec ornare fringilla sagittis. Nam laoreet est in elementum malesuada. Vestibulum id mi eget urna hendrerit feugiat. Donec et ultrices nulla. Phasellus diam eros, dapibus at tempus nec, semper vel ante.</p>
+    <p>DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly.</p>
 
-    <p>Curabitur auctor, metus at tristique euismod, odio elit tincidunt neque, a facilisis sem massa convallis dolor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc ut hendrerit tellus. Nunc lacinia laoreet finibus. Etiam vitae sagittis enim. Fusce consectetur porta est eu pretium. In hac habitasse platea dictumst. Integer pellentesque sit amet sapien id venenatis. Nullam ac risus at orci eleifend aliquet. Vestibulum elit purus, euismod a nibh quis, pellentesque semper leo. Curabitur ullamcorper felis hendrerit nunc egestas, sit amet pharetra sapien porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Maecenas hendrerit ipsum a ligula aliquet vestibulum. Duis a ante urna. Aenean ante neque, rhoncus id luctus ut, accumsan vel nunc.</p>
+    <p>CONCOCT uses nucleotide composition information and source strain abundance (measured by depth-of-coverage by aligning the reads to the contigs) to perform binning.</p>
+    <p><hr></p>
+    <p><hr></p>
+    <p><i>Implemented for KBase by <a href="mailto:sjungbluth@lbl.gov">Sean Jungbluth(sjungbluth@lbl.gov)</a></i></p>
+    <p><hr></p>
+    <p>CONCOCT takes a metagenome assembly and the reads that produced the assembly and organizes the contigs into putative genomes, called "bins".</p>
+    <p><hr></p>
+    <p><b>Configuration:</b></p>
+    <p><b><i>Assembly Object:</i></b> The Assembly object is a collection of assembled genome fragments, called "contigs".  These are the items that CONCOCT will bin.  Currently only a single Assembly object is accepted by the CONCOCT App.</p>
+    <p><b><i>BinnedContig Object Name:</i></b> The BinnedContig Object represents the directory of binned contigs created by CONCOCT. This object can be used for downstream analysis</p>
+    <p><b><i>Read Library Object:</i></b> The read libraries are aligned to the assembly using bbmap, and provide the abundance information for each contig that roughly follows the species abundance.</p>
+    <p><b><i>Minimum Contig Length:</i></b> Contigs that are too short may slow down analysis and not give statistically meaningful nucleotide composition profiles.  A value of 1000 - 2500 bp is a reasonable cutoff.</p>
+    <p><hr></p>
+    <p><b>Output:</b></p>
+    <p><b><i>Output Object:</i></b>The BinnedContig Object represents the directory of binned contigs created by CONCOCT. This object can be used for downstream analysis.</p>
+    <p><b><i>Output Bin Summary Report:</i></b>The number of bins produced, the number of contigs that were binned and the total number of contigs in the assembly.</p>
+    <p><b><i>Downloadable files:</i></b> The enitre output of the CONCOCT run may be downloaded as a zip file. This zip file also contains a table of read-depth coverage per contig ("*.depth.txt")</p>
+    <p><b><u>column definitions for *.depth.txt file</u></p>
+    <table style="width:50%">
+    <tr><td>1. contig name</td></tr>
+    <tr><td>2. contig length</td></tr>
+    <tr><td>3. total average depth (all libraries)</td></tr>
+    <tr><td>4. library 1 depth</td></tr>
+    <tr><td>5. library 1 variance</td></tr>
+    <tr><td>6. next library ... etc</td></tr></table>
 
-    <p>Pellentesque accumsan aliquet magna, id consectetur tellus condimentum eu. Suspendisse elit dui, ornare ac leo eget, tincidunt feugiat orci. Maecenas auctor gravida lacinia. Mauris interdum nisi vel gravida varius. Nullam tempus, purus eget posuere aliquet, odio elit semper massa, quis facilisis massa odio vitae lacus. Fusce varius enim a mi vehicula tempus. Maecenas faucibus tellus ipsum, at venenatis ipsum auctor et. Suspendisse sem mi, dignissim id porta efficitur, auctor eget magna. Vivamus varius purus nulla, porttitor euismod lorem cursus quis. Nulla sit amet eros nec sem ultrices pulvinar.</p>
+publications:
+    -
+        pmid : 29807988
+        display-text : |
+            Sieber CMK, Probst AJ, Sharrar A, Thomas BC, Hess M, Tringe SG, Banfield JF. Recovery of genomes from metagenomes via a dereplication, aggregation and scoring strategy. 2018; 3(7): 836-843. doi:10.1038/s41564-018-0171-1
+        link: https://doi.org/10.1038/s41564-018-0171-1
+
+    -
+        display-text : |
+            DAS_Tool source:
+        link: https://github.com/cmks/DAS_Tool

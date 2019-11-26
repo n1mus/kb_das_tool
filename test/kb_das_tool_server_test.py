@@ -64,4 +64,5 @@ class kb_das_toolTest(unittest.TestCase):
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
         ret = self.serviceImpl.run_kb_das_tool(self.ctx, {'workspace_name': self.wsName,
+                                                             
                                                              'parameter_1': 'Hello World!'})
