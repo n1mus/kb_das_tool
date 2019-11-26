@@ -44,7 +44,7 @@ class DASToolUtil:
         log('Start validating run_kb_das_tool params')
 
         # check for required parameters
-        for p in ['assembly_ref', 'binned_contig_name', 'workspace_name', 'reads_list']:
+        for p in ['binned_contig_name', 'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
