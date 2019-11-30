@@ -2,6 +2,7 @@
 import os
 import time
 import unittest
+import shutil
 from configparser import ConfigParser
 
 from kb_das_tool.kb_das_toolImpl import kb_das_tool
@@ -14,6 +15,7 @@ from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.WorkspaceClient import Workspace
+from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
 
 
 class kb_das_toolTest(unittest.TestCase):
@@ -55,8 +57,9 @@ class kb_das_toolTest(unittest.TestCase):
         cls.dfu = DataFileUtil(os.environ['SDK_CALLBACK_URL'], token=cls.token)
         cls.ru = ReadsUtils(os.environ['SDK_CALLBACK_URL'], token=cls.token)
         cls.au = AssemblyUtil(os.environ['SDK_CALLBACK_URL'], token=cls.token)
+        cls.mgu = MetagenomeUtils(os.environ['SDK_CALLBACK_URL'], token=cls.token)
         cls.das_tool_runner = DASToolUtil(cls.cfg)
-        # cls.prepare_data()
+        cls.prepare_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -70,46 +73,26 @@ class kb_das_toolTest(unittest.TestCase):
         Lets put everything on workspace
         """
         #
-        # READS 1
-        # building Interleaved library
-        pe1_reads_filename = 'lib1.oldstyle.fastq'
-        pe1_reads_path = os.path.join(cls.scratch, pe1_reads_filename)
 
-        # gets put on scratch. "work/tmp" is scratch
-        shutil.copy(os.path.join("data", pe1_reads_filename), pe1_reads_path)
-
-        int1_reads_params = {
-            'fwd_file': pe1_reads_path,
-            'sequencing_tech': 'Unknown',
-            'wsname': cls.ws_info[1],
-            'name': 'MyInterleavedLibrary1',
-            'interleaved': 'true'
-        }
-
-        #from scratch upload to workspace
-
-        cls.int1_oldstyle_reads_ref = cls.ru.upload_reads(int1_reads_params)['obj_ref']
-        print("cls.int1_oldstyle_reads_ref***")
-        print(str(cls.int1_oldstyle_reads_ref))
-        # READS 2
-        # building Interleaved library
-        pe2_reads_filename = 'lib2.oldstyle.fastq'
-        pe2_reads_path = os.path.join(cls.scratch, pe2_reads_filename)
-
-        # gets put on scratch. "work/tmp" is scratch
-        shutil.copy(os.path.join("data", pe2_reads_filename), pe2_reads_path)
-
-        int2_reads_params = {
-            'fwd_file': pe2_reads_path,
-            'sequencing_tech': 'Unknown',
-            'wsname': cls.ws_info[1],
-            'name': 'MyInterleavedLibrary2',
-            'interleaved': 'true'
-        }
-
-        #from scratch upload to workspace
-        cls.int2_oldstyle_reads_ref = cls.ru.upload_reads(int2_reads_params)['obj_ref']
-        #
+    #     # READS 2
+    #     # building Interleaved library
+    #     pe2_reads_filename = 'lib2.oldstyle.fastq'
+    #     pe2_reads_path = os.path.join(cls.scratch, pe2_reads_filename)
+    #
+    #     # gets put on scratch. "work/tmp" is scratch
+    #     shutil.copy(os.path.join("data", pe2_reads_filename), pe2_reads_path)
+    #
+    #     int2_reads_params = {
+    #         'fwd_file': pe2_reads_path,
+    #         'sequencing_tech': 'Unknown',
+    #         'wsname': cls.ws_info[1],
+    #         'name': 'MyInterleavedLibrary2',
+    #         'interleaved': 'true'
+    #     }
+    #
+    #     #from scratch upload to workspace
+    #     cls.int2_oldstyle_reads_ref = cls.ru.upload_reads(int2_reads_params)['obj_ref']
+    #     #
         # building Assembly
         #
         assembly_filename = 'small_arctic_assembly.fa'
@@ -125,6 +108,86 @@ class kb_das_toolTest(unittest.TestCase):
 
         # puts assembly object onto shock
         cls.assembly_ref = cls.au.save_assembly_from_fasta(assembly_params)
+
+        print('\nDone uploading assembly')
+
+        # Genome Bin set 1
+        genome_bin_folder_name = 'bins_concoct'
+        print("\n\n\n\ngenome_bin_folder_name: {}".format(genome_bin_folder_name))
+        genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
+        print("\n\n\n\ngenome_bin_folder_path: {}".format(genome_bin_folder_path))
+        os.listdir(genome_bin_folder_path)
+
+        task_params = []
+        for dirname, subdirs, files in os.walk(genome_bin_folder_path):
+            for file in files:
+                print("file: {}".format(file))
+                if file.endswith('.fasta'):
+                    task_params['result_directory'] = os.path.join(self.scratch, str("dastool_output_dir"))
+                    task_params['bin_result_directory'] = genome_bin_folder_name
+                    das_tool_runner.make_binned_contig_summary_file_for_binning_apps(task_params)
+        # gets put on scratch. "work/tmp" is scratch
+        shutil.copytree(os.path.join("data", genome_bin_folder_name), genome_bin_folder_path)
+
+        binned_contig_object_params = {
+            'file_directory': genome_bin_folder_path,
+            'assembly_ref': cls.assembly_ref,
+            'binned_contig_name': 'concoct.test_data.BinnedContig',
+            'workspace_name': cls.ws_info[1],
+        }
+
+        #from scratch upload to workspace
+
+        cls.concoct_genome_bin_ref = cls.mgu.file_to_binned_contigs(binned_contig_object_params)
+        print("cls.concoct_genome_bin_ref***")
+        print(str(cls.concoct_genome_bin_ref))
+
+
+
+
+        # Genome Bin set 2
+        genome_bin_folder_name = 'bins_metabat'
+        genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
+        print("genome_bin_folder_path: {}".format(genome_bin_folder_path))
+
+        # gets put on scratch. "work/tmp" is scratch
+        shutil.copytree(os.path.join("data", genome_bin_folder_name), genome_bin_folder_path)
+
+        binned_contig_object_params = {
+            'file_directory': genome_bin_folder_path,
+            'assembly_ref': cls.assembly_ref,
+            'binned_contig_name': 'metabat.test_data.BinnedContig',
+            'workspace_name': cls.ws_info[1],
+        }
+
+        #from scratch upload to workspace
+
+        cls.metabat_genome_bin_ref = cls.mgu.file_to_binned_contigs(binned_contig_object_params)
+        print("cls.metabat_genome_bin_ref***")
+        print(str(cls.metabat_genome_bin_ref))
+
+
+        # Genome Bin set 3
+        genome_bin_folder_name = 'bins_maxbin'
+        genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
+        print("genome_bin_folder_path: {}".format(genome_bin_folder_path))
+
+        # gets put on scratch. "work/tmp" is scratch
+        shutil.copytree(os.path.join("data", genome_bin_folder_name), genome_bin_folder_path)
+
+        binned_contig_object_params = {
+            'file_directory': genome_bin_folder_path,
+            'assembly_ref': cls.assembly_ref,
+            'binned_contig_name': 'maxbin.test_data.BinnedContig',
+            'workspace_name': cls.ws_info[1],
+        }
+
+        #from scratch upload to workspace
+
+        cls.maxbin_genome_bin_ref = cls.mgu.file_to_binned_contigs(binned_contig_object_params)
+        print("cls.maxbin_genome_bin_ref***")
+        print(str(cls.maxbin_genome_bin_ref))
+
 
     def getWsClient(self):
         return self.__class__.wsClient
@@ -149,5 +212,5 @@ class kb_das_toolTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.run_kb_das_tool(self.ctx, {'workspace_name': self.wsName,
-                    'binned_contig_name': ['binned.contig.object.1', 'binned.contig.object.2'] })
+        ret = self.serviceImpl.run_kb_das_tool(self.ctx, {'assembly_ref': self.assembly_ref, 'workspace_name': self.wsName,
+                    'binned_contig_names': [self.concoct_genome_bin_ref, self.metabat_genome_bin_ref, self.maxbin_genome_bin_ref] })

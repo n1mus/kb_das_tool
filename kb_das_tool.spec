@@ -15,6 +15,7 @@ module kb_das_tool {
 
     /*
         required params:
+        assembly_ref: Genome assembly object reference
         binned_contig_names: list of BinnedContig object names
         workspace_name: the name of the workspace it gets saved to.
 
@@ -31,6 +32,7 @@ module kb_das_tool {
 
     */
     typedef structure {
+        obj_ref assembly_ref;
         list<obj_ref> binned_contig_name;
         string workspace_name;
 

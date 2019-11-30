@@ -6,6 +6,7 @@ import sys
 import time
 import uuid
 import zipfile
+import shutil
 
 from Bio import SeqIO
 
@@ -45,7 +46,7 @@ class DASToolUtil:
         log('Start validating run_kb_das_tool params')
 
         # check for required parameters
-        for p in ['binned_contig_name', 'workspace_name']:
+        for p in ['assembly_ref', 'binned_contig_names', 'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -280,6 +281,86 @@ class DASToolUtil:
 
         return report_output
 
+
+    def generate_stats_for_genome_bins(self, task_params, genome_bin_fna_file, bbstats_output_file):
+        """
+        generate_command: bbtools stats.sh command
+        """
+        log("running generate_stats_for_genome_bins on {}".format(genome_bin_fna_file))
+        genome_bin_fna_file = os.path.join(self.scratch, self.CONCOCT_RESULT_DIRECTORY, genome_bin_fna_file)
+        command = '/bin/bash stats.sh in={} format=3 > {}'.format(genome_bin_fna_file, bbstats_output_file)
+        self._run_command(command)
+        bbstats_output = open(bbstats_output_file, 'r').readlines()[1]
+        n_scaffolds = bbstats_output.split('\t')[0]
+        n_contigs = bbstats_output.split('\t')[1]
+        scaf_bp = bbstats_output.split('\t')[2]
+        contig_bp = bbstats_output.split('\t')[3]
+        gap_pct = bbstats_output.split('\t')[4]
+        scaf_N50 = bbstats_output.split('\t')[5]
+        scaf_L50 = bbstats_output.split('\t')[6]
+        ctg_N50 = bbstats_output.split('\t')[7]
+        ctg_L50 = bbstats_output.split('\t')[8]
+        scaf_N90 = bbstats_output.split('\t')[9]
+        scaf_L90 = bbstats_output.split('\t')[10]
+        ctg_N90 = bbstats_output.split('\t')[11]
+        ctg_L90 = bbstats_output.split('\t')[12]
+        scaf_max = bbstats_output.split('\t')[13]
+        ctg_max = bbstats_output.split('\t')[14]
+        scaf_n_gt50K = bbstats_output.split('\t')[15]
+        scaf_pct_gt50K = bbstats_output.split('\t')[16]
+        gc_avg = float(bbstats_output.split('\t')[17]) * 100  # need to figure out if correct
+        gc_std = float(bbstats_output.split('\t')[18]) * 100  # need to figure out if correct
+
+        log('Generated generate_stats_for_genome_bins command: {}'.format(command))
+
+        return {'n_scaffolds': n_scaffolds,
+                'n_contigs': n_contigs,
+                'scaf_bp': scaf_bp,
+                'contig_bp': contig_bp,
+                'gap_pct': gap_pct,
+                'scaf_N50': scaf_N50,
+                'scaf_L50': scaf_L50,
+                'ctg_N50': ctg_N50,
+                'ctg_L50': ctg_L50,
+                'scaf_N90': scaf_N90,
+                'scaf_L90': scaf_L90,
+                'ctg_N90': ctg_N90,
+                'ctg_L90': ctg_L90,
+                'scaf_max': scaf_max,
+                'ctg_max': ctg_max,
+                'scaf_n_gt50K': scaf_n_gt50K,
+                'scaf_pct_gt50K': scaf_pct_gt50K,
+                'gc_avg': gc_avg,
+                'gc_std': gc_std
+                }
+
+
+    def make_binned_contig_summary_file_for_binning_apps(self, task_params):
+        """
+        generate_command: generate binned contig summary command
+        """
+        log("\n\nRunning make_binned_contig_summary_file_for_binning_apps")
+        result_directory = task_params['result_directory']
+        path_to_result_bins = '{}/{}/'.format(result_directory, task_params['bin_result_directory'])
+        path_to_summary_file = path_to_result_bins + 'binned_contig.summary'
+        with open(path_to_summary_file, 'w+') as f:
+            f.write("Bin name\tCompleteness\tGenome size\tGC content\n")
+            for dirname, subdirs, files in os.walk(path_to_result_bins):
+                for file in files:
+                    if file.endswith('.fasta'):
+                        genome_bin_fna_file = os.path.join(path_to_result_bins, file)
+                        bbstats_output_file = os.path.join(self.scratch, self.CONCOCT_RESULT_DIRECTORY,
+                                                           genome_bin_fna_file).split('.fasta')[0] + ".bbstatsout"
+                        bbstats_output = self.generate_stats_for_genome_bins(task_params,
+                                                                             genome_bin_fna_file,
+                                                                             bbstats_output_file)
+                        f.write('{}\t0\t{}\t{}\n'.format(genome_bin_fna_file.split("/")[-1],
+                                                         bbstats_output['contig_bp'],
+                                                         bbstats_output['gc_avg']))
+        f.close()
+        log('Finished make_binned_contig_summary_file_for_binning_apps function')
+
+
     def run_das_tool(self, params):
         """
         run_das_tool: DAS_Tool app
@@ -290,26 +371,29 @@ class DASToolUtil:
             workspace_name: the name of the workspace it gets saved to.
 
         optional params:
-            min_contig_length: minimum contig length; default 1000
+            search_engine; default diamond
+            score_threshold; default 0.5
+            duplicate_penalty; default 0.6
+            megabin_penalty; default 0.5
+            write_bin_evals; default 1
+            create_plots; default 1
+            write_bins; default 1
+            write_unbinned; default 0
 
         ref: https://github.com/cmks/DAS_Tool
         """
-        log('--->\nrunning ConcoctUtil.run_concoct\n' +
+        log('--->\nrunning DASToolUtil.run_das_tool\n' +
             'params:\n{}'.format(json.dumps(params, indent=1)))
 
         self.validate_run_das_tool_params(params)
 
         print("\n\nFinished running validate_run_das_tool_params")
         #
-        # contig_file = self.get_contig_file(params.get('assembly_ref'))
-        # params['contig_file_path'] = contig_file
-
-        params['binned_contig_list_file'] = binned_contig_list_file
+        contig_file = self.get_contig_file(params.get('assembly_ref'))
+        params['contig_file_path'] = contig_file
 
 
-        for binned_contigs_object in binned_contig_list_file:
-            print("\n\nbinned_contigs_object: {}" binned_contigs_object)
-        #self.mgu.binned_contigs_to_file(params)
+
 
         result_directory = os.path.join(self.scratch, str("dastool_output_dir"))
 
@@ -321,6 +405,38 @@ class DASToolUtil:
         log('changing working dir to {}'.format(result_directory))
         os.chdir(result_directory)
 
+        #params['binned_contig_list_file'] = binned_contig_list_file
+        binned_contig_names = params['binned_contig_names']
+        print("\n\nbinned_contig_names: {}".format(binned_contig_names))
+        print("\n\nbinned_contig_names: {}".format(type(binned_contig_names)))
+        i = 0
+
+        for input_ref in binned_contig_names:
+            print("\n\ninput_ref: {}".format(input_ref))
+            print("\n\ninput_ref: {}".format(type(input_ref)))
+            self.mkdir_p('bin_set_{}'.format(i))
+            binned_contig_to_file_params = {
+                'input_ref': input_ref['binned_contig_obj_ref'],
+                'save_to_shock': 1,
+                'bin_file_directory': '{}/bin_set_{}'.format(result_directory, i),
+                'workspace_name': params.get('workspace_name'),
+            }
+            
+            self.mgu.binned_contigs_to_file(binned_contig_to_file_params) # returns "binned_contig_obj_ref" of type "obj_ref" (An X/Y/Z style reference)
+
+            print("\n\n\nCheckpoint: ")
+            export_binned_contigs_as_excel_params = {
+                'input_ref': input_ref['binned_contig_obj_ref'],
+                'save_to_shock': 1,
+                'bin_file_directory': '{}/bin_set_{}'.format(result_directory, i),
+                'workspace_name': params.get('workspace_name'),
+            }
+
+            bin_file_directory = self.mgu.export_binned_contigs_as_excel(export_binned_contigs_as_excel_params)['bin_file_directory'] # returns "binned_contig_obj_ref" of type "obj_ref" (An X/Y/Z style reference)
+
+            #shutil.copytree(bin_file_directory, os.path.join(result_directory, bin_file_directory))
+            i += 1
+            print('\n\n\n result: {}'.format(self.mgu.binned_contigs_to_file(binned_contig_to_file_params)))
 
         #run concoct
         # command = self.generate_das_tool_command(params)
