@@ -137,7 +137,7 @@ class DASToolUtil:
         command += '-i {} '.format(contig_to_bin_file_name_list)
         command += '-l {} '.format(trimmed_binned_contig_name_list)
         command += '-c {} '.format(params.get('contig_file_path'))
-        command += '-o das_tool_output_dir '
+        command += '-o {} '.format(self.BINNER_RESULT_DIRECTORY)
         command += '--search_engine {} '.format(params.get('search_engine'))
         command += '--score_threshold {} '.format(params.get('score_threshold'))
         command += '--duplicate_penalty {} '.format(params.get('duplicate_penalty'))
@@ -416,7 +416,7 @@ class DASToolUtil:
         contig_file = self.get_contig_file(params.get('assembly_ref'))
         params['contig_file_path'] = contig_file
 
-        result_directory = os.path.join(self.scratch, str("dastool_output_dir"))
+        result_directory = os.path.join(self.scratch, SELF.BINNER_RESULT_DIRECTORY)
         params['result_directory'] = result_directory
         self.mkdir_p(result_directory)
 

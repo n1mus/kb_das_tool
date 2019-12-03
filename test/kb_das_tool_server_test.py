@@ -247,7 +247,7 @@ class kb_das_toolTest(unittest.TestCase):
         return self.__class__.ctx
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
-    def test_your_method(self):
+    def test_kb_das_tool(self):
         # Prepare test objects in workspace if needed using
         # self.getWsClient().save_objects({'workspace': self.getWsName(),
         #                                  'objects': []})
@@ -261,7 +261,7 @@ class kb_das_toolTest(unittest.TestCase):
                                                           'workspace_name': self.wsName,
                                                           'binned_contig_names': [self.concoct_genome_bin_ref, self.metabat_genome_bin_ref, self.maxbin_genome_bin_ref],
                                                           'search_engine': 'diamond',
-                                                          'score_threshold': 0.5,
+                                                          'score_threshold': 0.1,
                                                           'duplicate_penalty': 0.6,
                                                           'megabin_penalty': 0.5,
                                                           'write_bin_evals': 1,
