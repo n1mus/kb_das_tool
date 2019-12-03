@@ -26,7 +26,6 @@ class DASToolUtil:
     DASTOOL_THREADS=2
     BINNER_RESULT_DIRECTORY = 'das_tool_output_dir'
     BINNER_BIN_RESULT_DIR = 'final_bins'
-    params['result_directory'] = 'das_tool_output_dir'
 
 
     def __init__(self, config):
@@ -123,36 +122,6 @@ class DASToolUtil:
         return assembly_clean
 
 
-    def generate_das_tool_command(self, params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list):
-        """
-        generate_command: generate concoct params
-        """
-        # print("params" + str(params))
-        # params['contig_file_path'] = self.retrieve_and_clean_assembly(params)
-        # print("params" + str(params))
-
-        print("\n\nRunning generate_das_tool_command")
-
-
-        command = 'DAS_Tool '
-
-        command += '-i {} '.format(contig_to_bin_file_name_list)
-        command += '-l {} '.format(trimmed_binned_contig_name_list)
-        command += '-c {} '.format(params.get('contig_file_path'))
-        command += '-o {} '.format(self.BINNER_RESULT_DIRECTORY)
-        command += '--search_engine {} '.format(params.get('search_engine'))
-        command += '--score_threshold {} '.format(params.get('score_threshold'))
-        command += '--duplicate_penalty {} '.format(params.get('duplicate_penalty'))
-        command += '--megabin_penalty {} '.format(params.get('megabin_penalty'))
-        command += '--write_bin_evals {} '.format(params.get('write_bin_evals'))
-        command += '--create_plots {} '.format(params.get('create_plots'))
-        command += '--write_bins {} '.format(params.get('write_bins'))
-        command += '--write_unbinned {} '.format(params.get('write_unbinned'))
-        command += '-t {}'.format(self.DASTOOL_THREADS)
-
-        log('Generated das_tool command: {}'.format(command))
-
-        return command
 
     def generate_output_file_list(self, result_directory):
         """
@@ -387,6 +356,37 @@ class DASToolUtil:
             f.close()
         return (trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
 
+
+    def generate_das_tool_command(self, params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list):
+        """
+        generate_command: generate concoct params
+        """
+        # print("params" + str(params))
+        # params['contig_file_path'] = self.retrieve_and_clean_assembly(params)
+        # print("params" + str(params))
+
+        print("\n\nRunning generate_das_tool_command")
+
+
+        command = 'DAS_Tool '
+
+        command += '-i {} '.format(contig_to_bin_file_name_list)
+        command += '-l {} '.format(trimmed_binned_contig_name_list)
+        command += '-c {} '.format(params.get('contig_file_path'))
+        command += '-o {} '.format(self.BINNER_RESULT_DIRECTORY)
+        command += '--search_engine {} '.format(params.get('search_engine'))
+        command += '--score_threshold {} '.format(params.get('score_threshold'))
+        command += '--duplicate_penalty {} '.format(params.get('duplicate_penalty'))
+        command += '--megabin_penalty {} '.format(params.get('megabin_penalty'))
+        command += '--write_bin_evals {} '.format(params.get('write_bin_evals'))
+        command += '--create_plots {} '.format(params.get('create_plots'))
+        command += '--write_bins {} '.format(params.get('write_bins'))
+        command += '--write_unbinned {} '.format(params.get('write_unbinned'))
+        command += '-t {}'.format(self.DASTOOL_THREADS)
+
+        log('Generated das_tool command: {}'.format(command))
+
+        return command
     def run_das_tool(self, params):
         """
         run_das_tool: DAS_Tool app
