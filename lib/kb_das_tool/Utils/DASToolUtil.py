@@ -424,7 +424,6 @@ class DASToolUtil:
 
         cwd = os.getcwd()
         log('Changing working dir to {}'.format(result_directory))
-        log(os.listdir(result_directory))
         os.chdir(result_directory)
 
         (trimmed_binned_contig_name_list, contig_to_bin_file_name_list) = self.generate_das_tool_input_files_and_commands_from_binned_contigs(params)
@@ -432,6 +431,7 @@ class DASToolUtil:
         trimmed_binned_contig_name_list = comma_symbol.join(trimmed_binned_contig_name_list)
         contig_to_bin_file_name_list = comma_symbol.join(contig_to_bin_file_name_list)
 
+        log(os.listdir(result_directory))
         log("trimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
         log("contig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
 
