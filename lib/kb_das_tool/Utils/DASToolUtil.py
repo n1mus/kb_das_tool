@@ -419,13 +419,13 @@ class DASToolUtil:
         contig_file = self.get_contig_file(params.get('assembly_ref'))
         params['contig_file_path'] = contig_file
 
-        # result_directory = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY)
-        # params['result_directory'] = result_directory
-        # self.mkdir_p(result_directory)
-        #
-        # cwd = os.getcwd()
-        # log('Changing working dir to {}'.format(result_directory))
-        # os.chdir(result_directory)
+        result_directory = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY)
+        params['result_directory'] = result_directory
+        self.mkdir_p(result_directory)
+
+        cwd = os.getcwd()
+        log('Changing working dir to {}'.format(result_directory))
+        os.chdir(result_directory)
 
         (trimmed_binned_contig_name_list, contig_to_bin_file_name_list) = self.generate_das_tool_input_files_and_commands_from_binned_contigs(params)
         comma_symbol = ','
@@ -435,8 +435,6 @@ class DASToolUtil:
         log(os.listdir(result_directory))
         log("trimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
         log("contig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
-
-
 
             # binned_contig_to_file_params = {
             #     'input_ref': input_ref['binned_contig_obj_ref'],
