@@ -373,7 +373,7 @@ class DASToolUtil:
         command += '-i {} '.format(contig_to_bin_file_name_list)
         command += '-l {} '.format(trimmed_binned_contig_name_list)
         command += '-c {} '.format(params.get('contig_file_path'))
-        command += '-o {} '.format(self.BINNER_RESULT_DIRECTORY)
+        command += '-o ./ '
         command += '--search_engine {} '.format(params.get('search_engine'))
         command += '--score_threshold {} '.format(params.get('score_threshold'))
         command += '--duplicate_penalty {} '.format(params.get('duplicate_penalty'))
@@ -387,6 +387,7 @@ class DASToolUtil:
         log('Generated das_tool command: {}'.format(command))
 
         return command
+
     def run_das_tool(self, params):
         """
         run_das_tool: DAS_Tool app
@@ -418,13 +419,13 @@ class DASToolUtil:
         contig_file = self.get_contig_file(params.get('assembly_ref'))
         params['contig_file_path'] = contig_file
 
-        result_directory = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY)
-        params['result_directory'] = result_directory
-        self.mkdir_p(result_directory)
-
-        cwd = os.getcwd()
-        log('Changing working dir to {}'.format(result_directory))
-        os.chdir(result_directory)
+        # result_directory = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY)
+        # params['result_directory'] = result_directory
+        # self.mkdir_p(result_directory)
+        #
+        # cwd = os.getcwd()
+        # log('Changing working dir to {}'.format(result_directory))
+        # os.chdir(result_directory)
 
         (trimmed_binned_contig_name_list, contig_to_bin_file_name_list) = self.generate_das_tool_input_files_and_commands_from_binned_contigs(params)
         comma_symbol = ','
