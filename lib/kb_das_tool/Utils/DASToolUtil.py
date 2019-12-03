@@ -451,6 +451,9 @@ class DASToolUtil:
 
         #run concoct
         command = self.generate_das_tool_command(params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
+        log('Working dir is {}'.format(result_directory))
+        log('Working dir is {}'.format(os.getcwd()))
+
 
         self.run_command(command)
 
