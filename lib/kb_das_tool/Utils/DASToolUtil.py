@@ -362,6 +362,42 @@ class DASToolUtil:
         f.close()
         log('Finished make_binned_contig_summary_file_for_binning_apps function')
 
+    def generate_das_tool_input_files_and_commands_from_binned_contigs(self, params):
+        #params['binned_contig_list_file'] = binned_contig_list_file
+        binned_contig_names = params['binned_contig_names']
+        print("\n\nbinned_contig_names: {}".format(binned_contig_names))
+        print("\n\nbinned_contig_names: {}".format(type(binned_contig_names)))
+
+        for input_ref in binned_contig_names:
+            print("\n\ninput_ref: {}".format(input_ref['binned_contig_obj_ref']))
+            print("\n\ninput_ref: {}".format(type(input_ref)))
+            #self.mkdir_p('bin_set_{}'.format(i))
+
+            binned_contig = self.dfu.get_objects({'object_refs':
+                                                 [input_ref['binned_contig_obj_ref']]})['data'][0]
+            binned_contig_name = binned_contig.get('info')[1]
+            binned_contig_data = binned_contig.get('data')
+            bins = binned_contig_data.get('bins')
+
+            # print("\nbinned_contig {}".format(binned_contig))
+            # print("\nbinned_contig_name {}".format(binned_contig_name))
+            # print("\nbinned_contig_data {}".format(binned_contig_data))
+            trimmed_binned_contig_name_list = []
+            trimmed_binned_contig_name = binned_contig_name.split(".BinnedContig")[0]
+            trimmed_binned_contig_name_list.append(trimmed_binned_contig_name)
+            contig_to_bin_file_name = "{}_contigs_to_bins.tsv".format(trimmed_binned_contig_name)
+            contig_to_bin_file_name_list = []
+            contig_to_bin_file_name_list.append(contig_to_bin_file_name)
+
+            f = open(contig_to_bin_file_name, "w+")
+            for bin in bins:
+                bin_id = bin.get('bid')
+                trimmed_bin_id = bin_id.split(".fasta")[0]
+                contigs = bin.get('contigs')
+                for contig_id, contig_value in contigs.items():
+                    f.write("{}\t{}.{}\n".format(contig_id, trimmed_binned_contig_name, trimmed_bin_id))
+            f.close()
+        return (trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
 
     def run_das_tool(self, params):
         """
@@ -394,49 +430,18 @@ class DASToolUtil:
         contig_file = self.get_contig_file(params.get('assembly_ref'))
         params['contig_file_path'] = contig_file
 
-
-
-
         result_directory = os.path.join(self.scratch, str("dastool_output_dir"))
-
         params['result_directory'] = result_directory
-
         self.mkdir_p(result_directory)
 
         cwd = os.getcwd()
         log('changing working dir to {}'.format(result_directory))
         os.chdir(result_directory)
 
-        #params['binned_contig_list_file'] = binned_contig_list_file
-        binned_contig_names = params['binned_contig_names']
-        print("\n\nbinned_contig_names: {}".format(binned_contig_names))
-        print("\n\nbinned_contig_names: {}".format(type(binned_contig_names)))
-        i = 0
+        (trimmed_binned_contig_name_list, contig_to_bin_file_name_list) = self.generate_das_tool_input_files_and_commands_from_binned_contigs(params)
+        print("\n\n\ntrimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
+        print("\n\n\ncontig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
 
-        for input_ref in binned_contig_names:
-            print("\n\ninput_ref: {}".format(input_ref['binned_contig_obj_ref']))
-            print("\n\ninput_ref: {}".format(type(input_ref)))
-            #self.mkdir_p('bin_set_{}'.format(i))
-
-            binned_contig = self.dfu.get_objects({'object_refs':
-                                                 [input_ref['binned_contig_obj_ref']]})['data'][0]
-            binned_contig_name = binned_contig.get('info')[1]
-            binned_contig_data = binned_contig.get('data')
-            bins = binned_contig_data.get('bins')
-
-            # print("\nbinned_contig {}".format(binned_contig))
-            # print("\nbinned_contig_name {}".format(binned_contig_name))
-            # print("\nbinned_contig_data {}".format(binned_contig_data))
-
-            trimmed_binned_contig_name = binned_contig_name.split(".BinnedContig")[0]
-            f = open("{}_contigs_to_bins.tsv".format(trimmed_binned_contig_name), "w+")
-            for bin in bins:
-                bin_id = bin.get('bid')
-                trimmed_bin_id = bin_id.split(".fasta")[0]
-                contigs = bin.get('contigs')
-                for contig_id, contig_value in contigs.items():
-                    f.write("{}\t{}.{}\n".format(contig_id, trimmed_binned_contig_name, trimmed_bin_id))
-            f.close()
             # binned_contig_to_file_params = {
             #     'input_ref': input_ref['binned_contig_obj_ref'],
             #     'save_to_shock': 1,
@@ -448,7 +453,6 @@ class DASToolUtil:
 
 
             #shutil.copytree(bin_file_directory, os.path.join(result_directory, bin_file_directory))
-            i += 1
             #print('\n\n\n result: {}'.format(self.mgu.binned_contigs_to_file(binned_contig_to_file_params)))
 
         #run concoct
