@@ -428,6 +428,10 @@ class DASToolUtil:
         os.chdir(result_directory)
 
         (trimmed_binned_contig_name_list, contig_to_bin_file_name_list) = self.generate_das_tool_input_files_and_commands_from_binned_contigs(params)
+        comma_symbol = ','
+        trimmed_binned_contig_name_list = comma_symbol.join(trimmed_binned_contig_name_list)
+        contig_to_bin_file_name_list = comma_symbol.join(contig_to_bin_file_name_list)
+
         print("\n\n\ntrimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
         print("\n\n\ncontig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
 
