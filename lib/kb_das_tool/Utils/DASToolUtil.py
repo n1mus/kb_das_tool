@@ -423,7 +423,8 @@ class DASToolUtil:
         self.mkdir_p(result_directory)
 
         cwd = os.getcwd()
-        log('changing working dir to {}'.format(result_directory))
+        log('Changing working dir to {}'.format(result_directory))
+        os.listdir(result_directory)
         os.chdir(result_directory)
 
         (trimmed_binned_contig_name_list, contig_to_bin_file_name_list) = self.generate_das_tool_input_files_and_commands_from_binned_contigs(params)
@@ -448,12 +449,6 @@ class DASToolUtil:
 
             #shutil.copytree(bin_file_directory, os.path.join(result_directory, bin_file_directory))
             #print('\n\n\n result: {}'.format(self.mgu.binned_contigs_to_file(binned_contig_to_file_params)))
-
-        os.chdir(result_directory)
-        log('Changing working dir to {}'.format(result_directory))
-
-        log('Saved result files to: {}'.format(result_directory))
-        log('Generated files:\n{}'.format('\n'.join(os.listdir(result_directory))))
 
         #run concoct
         command = self.generate_das_tool_command(params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
