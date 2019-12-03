@@ -432,8 +432,8 @@ class DASToolUtil:
         trimmed_binned_contig_name_list = comma_symbol.join(trimmed_binned_contig_name_list)
         contig_to_bin_file_name_list = comma_symbol.join(contig_to_bin_file_name_list)
 
-        print("\n\n\ntrimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
-        print("\n\n\ncontig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
+        log("trimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
+        log("contig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
 
             # binned_contig_to_file_params = {
             #     'input_ref': input_ref['binned_contig_obj_ref'],
