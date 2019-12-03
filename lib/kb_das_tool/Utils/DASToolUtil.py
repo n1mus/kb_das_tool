@@ -26,7 +26,7 @@ class DASToolUtil:
     DASTOOL_THREADS=2
     BINNER_RESULT_DIRECTORY = 'das_tool_output_dir'
     BINNER_BIN_RESULT_DIR = 'final_bins'
-    task_params['result_directory'] = 'das_tool_output_dir'
+    params['result_directory'] = 'das_tool_output_dir'
 
 
     def __init__(self, config):
