@@ -416,7 +416,7 @@ class DASToolUtil:
         contig_file = self.get_contig_file(params.get('assembly_ref'))
         params['contig_file_path'] = contig_file
 
-        result_directory = os.path.join(self.scratch, SELF.BINNER_RESULT_DIRECTORY)
+        result_directory = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY)
         params['result_directory'] = result_directory
         self.mkdir_p(result_directory)
 
