@@ -452,8 +452,8 @@ class DASToolUtil:
 
         self.run_command(command)
 
-        os.chdir(cwd)
-        log('changing working dir to {}'.format(cwd))
+        os.chdir(result_directory)
+        log('Changing working dir to {}'.format(result_directory))
 
         log('Saved result files to: {}'.format(result_directory))
         log('Generated files:\n{}'.format('\n'.join(os.listdir(result_directory))))
