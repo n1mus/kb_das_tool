@@ -32,6 +32,7 @@ RUN git clone https://github.com/cmks/DAS_Tool
 RUN cd DAS_Tool && unzip db.zip && chmod 700 DAS_Tool && sh -c "R CMD INSTALL ./package/DASTool*"
 
 ENV PATH=/kb/module/bin/DAS_Tool:$PATH
+ENV PATH=/kb/module/lib/kb_das_tool/bin/bbmap:$PATH
 
 
 COPY ./ /kb/module

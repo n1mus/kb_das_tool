@@ -61,6 +61,7 @@ class kb_das_toolTest(unittest.TestCase):
         cls.das_tool_runner = DASToolUtil(cls.cfg)
         cls.prepare_data()
 
+
     @classmethod
     def tearDownClass(cls):
         if hasattr(cls, 'wsName'):
@@ -111,26 +112,31 @@ class kb_das_toolTest(unittest.TestCase):
 
         print('\nDone uploading assembly')
 
+
+
+        os.chdir("/kb/module/test/")
+
         # Genome Bin set 1
         genome_bin_folder_name = 'bins_concoct'
-        print("\n\n\n\ngenome_bin_folder_name: {}".format(genome_bin_folder_name))
-        genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
-        print("\n\n\n\ngenome_bin_folder_path: {}".format(genome_bin_folder_path))
-        os.listdir(genome_bin_folder_path)
+        cls.genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
+        shutil.copytree(os.path.join("data", genome_bin_folder_name), cls.genome_bin_folder_path)
 
-        task_params = []
-        for dirname, subdirs, files in os.walk(genome_bin_folder_path):
+        task_params = {}
+        for dirname, subdirs, files in os.walk(cls.genome_bin_folder_path):
             for file in files:
                 print("file: {}".format(file))
                 if file.endswith('.fasta'):
-                    task_params['result_directory'] = os.path.join(self.scratch, str("dastool_output_dir"))
+                    #print('task_params1 {}'.format(task_params['result_directory']))
+                    #print('task_params2 {}'.format(task_params['bin_result_directory']))
+                    task_params['result_directory'] = os.path.join(cls.scratch)
                     task_params['bin_result_directory'] = genome_bin_folder_name
-                    das_tool_runner.make_binned_contig_summary_file_for_binning_apps(task_params)
+                    cls.das_tool_runner.make_binned_contig_summary_file_for_binning_apps(task_params)
         # gets put on scratch. "work/tmp" is scratch
-        shutil.copytree(os.path.join("data", genome_bin_folder_name), genome_bin_folder_path)
+
+        #shutil.move(genome_bin_folder_name, os.path.join(str("dastool_output_dir"), genome_bin_folder_name))
 
         binned_contig_object_params = {
-            'file_directory': genome_bin_folder_path,
+            'file_directory': cls.genome_bin_folder_path,
             'assembly_ref': cls.assembly_ref,
             'binned_contig_name': 'concoct.test_data.BinnedContig',
             'workspace_name': cls.ws_info[1],
@@ -146,15 +152,33 @@ class kb_das_toolTest(unittest.TestCase):
 
 
         # Genome Bin set 2
-        genome_bin_folder_name = 'bins_metabat'
-        genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
-        print("genome_bin_folder_path: {}".format(genome_bin_folder_path))
+        os.chdir("/kb/module/test/")
 
+        genome_bin_folder_name = 'bins_metabat'
+        print("\n\n\n\ngenome_bin_folder_name: {}".format(genome_bin_folder_name))
+        cls.genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
+        shutil.copytree(os.path.join("data", genome_bin_folder_name), cls.genome_bin_folder_path)
+
+        print("\n\n\n\ngenome_bin_folder_path: {}".format(cls.genome_bin_folder_path))
+        os.listdir(cls.genome_bin_folder_path)
+
+        task_params = {}
+        for dirname, subdirs, files in os.walk(cls.genome_bin_folder_path):
+            for file in files:
+                print("file: {}".format(file))
+                if file.endswith('.fasta'):
+                    #print('task_params1 {}'.format(task_params['result_directory']))
+                    #print('task_params2 {}'.format(task_params['bin_result_directory']))
+                    print(os.path.join(cls.scratch, str("dastool_output_dir")))
+                    print(genome_bin_folder_name)
+                    task_params['result_directory'] = os.path.join(cls.scratch)
+                    task_params['bin_result_directory'] = genome_bin_folder_name
+                    cls.das_tool_runner.make_binned_contig_summary_file_for_binning_apps(task_params)
         # gets put on scratch. "work/tmp" is scratch
-        shutil.copytree(os.path.join("data", genome_bin_folder_name), genome_bin_folder_path)
+        #shutil.move(genome_bin_folder_name, os.path.join(str("dastool_output_dir"), genome_bin_folder_name))
 
         binned_contig_object_params = {
-            'file_directory': genome_bin_folder_path,
+            'file_directory': cls.genome_bin_folder_path,
             'assembly_ref': cls.assembly_ref,
             'binned_contig_name': 'metabat.test_data.BinnedContig',
             'workspace_name': cls.ws_info[1],
@@ -167,16 +191,36 @@ class kb_das_toolTest(unittest.TestCase):
         print(str(cls.metabat_genome_bin_ref))
 
 
-        # Genome Bin set 3
-        genome_bin_folder_name = 'bins_maxbin'
-        genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
-        print("genome_bin_folder_path: {}".format(genome_bin_folder_path))
 
+
+        # Genome Bin set 3
+        os.chdir("/kb/module/test/")
+
+        genome_bin_folder_name = 'bins_maxbin'
+        print("\n\n\n\ngenome_bin_folder_name: {}".format(genome_bin_folder_name))
+        cls.genome_bin_folder_path = os.path.join(cls.scratch, genome_bin_folder_name)
+        shutil.copytree(os.path.join("data", genome_bin_folder_name), cls.genome_bin_folder_path)
+
+        print("\n\n\n\ngenome_bin_folder_path: {}".format(cls.genome_bin_folder_path))
+        os.listdir(cls.genome_bin_folder_path)
+
+        task_params = {}
+        for dirname, subdirs, files in os.walk(cls.genome_bin_folder_path):
+            for file in files:
+                print("file: {}".format(file))
+                if file.endswith('.fasta'):
+                    #print('task_params1 {}'.format(task_params['result_directory']))
+                    #print('task_params2 {}'.format(task_params['bin_result_directory']))
+                    print(os.path.join(cls.scratch, str("dastool_output_dir")))
+                    print(genome_bin_folder_name)
+                    task_params['result_directory'] = os.path.join(cls.scratch)
+                    task_params['bin_result_directory'] = genome_bin_folder_name
+                    cls.das_tool_runner.make_binned_contig_summary_file_for_binning_apps(task_params)
         # gets put on scratch. "work/tmp" is scratch
-        shutil.copytree(os.path.join("data", genome_bin_folder_name), genome_bin_folder_path)
+        #shutil.move(genome_bin_folder_name, os.path.join(str("dastool_output_dir"), genome_bin_folder_name))
 
         binned_contig_object_params = {
-            'file_directory': genome_bin_folder_path,
+            'file_directory': cls.genome_bin_folder_path,
             'assembly_ref': cls.assembly_ref,
             'binned_contig_name': 'maxbin.test_data.BinnedContig',
             'workspace_name': cls.ws_info[1],
@@ -187,6 +231,7 @@ class kb_das_toolTest(unittest.TestCase):
         cls.maxbin_genome_bin_ref = cls.mgu.file_to_binned_contigs(binned_contig_object_params)
         print("cls.maxbin_genome_bin_ref***")
         print(str(cls.maxbin_genome_bin_ref))
+
 
 
     def getWsClient(self):
