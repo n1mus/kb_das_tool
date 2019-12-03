@@ -121,7 +121,7 @@ class DASToolUtil:
         return assembly_clean
 
 
-    def generate_das_tool_command(self, params):
+    def generate_das_tool_command(self, params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list):
         """
         generate_command: generate concoct params
         """
@@ -129,16 +129,13 @@ class DASToolUtil:
         # params['contig_file_path'] = self.retrieve_and_clean_assembly(params)
         # print("params" + str(params))
 
-        binned_contig_files = self.generate_input_binned_contig_list_command[0]
-        binned_contig_names = self.generate_input_binned_contig_list_command[1]
-
-
         print("\n\nRunning generate_das_tool_command")
+
 
         command = 'DAS_Tool '
 
-        command += '-i {} '.format(binned_contig_files)
-        command += '-l {} '.format(binned_contig_names)
+        command += '-i {} '.format(contig_to_bin_file_name_list)
+        command += '-l {} '.format(trimmed_binned_contig_name_list)
         command += '-c {} '.format(params.get('contig_file_path'))
         command += '-o das_tool_output_dir '
         command += '--search_engine {} '.format(params.get('search_engine'))
@@ -435,6 +432,8 @@ class DASToolUtil:
         log("trimmed_binned_contig_name_list {}".format(trimmed_binned_contig_name_list))
         log("contig_to_bin_file_name_list {}".format(contig_to_bin_file_name_list))
 
+
+
             # binned_contig_to_file_params = {
             #     'input_ref': input_ref['binned_contig_obj_ref'],
             #     'save_to_shock': 1,
@@ -449,9 +448,9 @@ class DASToolUtil:
             #print('\n\n\n result: {}'.format(self.mgu.binned_contigs_to_file(binned_contig_to_file_params)))
 
         #run concoct
-        # command = self.generate_das_tool_command(params)
-        #
-        # self.run_command(command)
+        command = self.generate_das_tool_command(params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
+
+        self.run_command(command)
 
         os.chdir(cwd)
         log('changing working dir to {}'.format(cwd))
