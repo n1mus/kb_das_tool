@@ -141,16 +141,20 @@ class DASToolUtil:
 
             # grab all files we want to zip
             for dirname, subdirs, files in os.walk(result_directory):
-                if (dirname.endswith(self.BINNER_BIN_RESULT_DIR)):
-                    baseDir=os.path.basename(dirname)
-                    for file in files:
-                        if (file.endswith('.summary')):
-                            continue
-                        full=os.path.join(dirname, file)
-                        zip_file.write(full,os.path.join(baseDir,file))
                 for file in files:
-                    if (file.endswith('.depth.txt')):
-                        zip_file.write(os.path.join(dirname, file),file)
+                    if (file.endswith('.sam') or
+                        file.endswith('.bam') or
+                        file.endswith('.bai') or
+                       file.endswith('.summary')):
+                            continue
+                    if (dirname.endswith(self.BINNER_BIN_RESULT_DIR)):
+                            continue
+                    zip_file.write(os.path.join(dirname, file), file)
+                if (dirname.endswith(self.BINNER_BIN_RESULT_DIR)):
+                    baseDir = os.path.basename(dirname)
+                    for file in files:
+                        full = os.path.join(dirname, file)
+                        zip_file.write(full, os.path.join(baseDir, file))
 
 
         output_files.append({'path': result_file,
@@ -228,6 +232,7 @@ class DASToolUtil:
 
         """
         log('Generating report')
+        params['result_directory'] = self.BINNER_RESULT_DIRECTORY
 
         output_files = self.generate_output_file_list(params['result_directory'])
 
