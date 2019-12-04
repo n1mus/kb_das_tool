@@ -23,7 +23,19 @@
             }
         },
         {
-            "id": "binned_contig_name",
+            "id": "input_binned_contig_names",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type" : "text",
+            "text_options" : {
+                "valid_ws_types" : [ "KBaseMetagenomes.BinnedContigs" ],
+                "is_output_name" : true
+            }
+        },
+        {
+            "id": "output_binned_contig_name",
             "optional": false,
             "advanced": false,
             "allow_multiple": true,
@@ -157,9 +169,13 @@
                     "target_property": "assembly_ref"
                 },
                 {
-                    "input_parameter": "binned_contig_name",
+                    "input_parameter": "input_binned_contig_names",
                     "target_type_transform": "list<ref>",
-                    "target_property": "binned_contig_name"
+                    "target_property": "input_binned_contig_names"
+                },
+                {
+                    "input_parameter": "output_binned_contig_name",
+                    "target_property": "output_binned_contig_name"
                 },
                 {
                     "input_parameter": "search_engine",

@@ -259,7 +259,8 @@ class kb_das_toolTest(unittest.TestCase):
         # self.assertEqual(ret[...], ...) or other unittest methods
         ret = self.serviceImpl.run_kb_das_tool(self.ctx, {'assembly_ref': self.assembly_ref,
                                                           'workspace_name': self.wsName,
-                                                          'binned_contig_names': [self.concoct_genome_bin_ref, self.metabat_genome_bin_ref, self.maxbin_genome_bin_ref],
+                                                          'input_binned_contig_names': [self.concoct_genome_bin_ref, self.metabat_genome_bin_ref, self.maxbin_genome_bin_ref],
+                                                          'output_binned_contig_name': 'dastool.test.output',
                                                           'search_engine': 'diamond',
                                                           'score_threshold': 0.1,
                                                           'duplicate_penalty': 0.6,

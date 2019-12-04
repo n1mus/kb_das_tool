@@ -33,7 +33,8 @@ module kb_das_tool {
     */
     typedef structure {
         obj_ref assembly_ref;
-        list<obj_ref> binned_contig_name;
+        list<obj_ref> input_binned_contig_names;
+        string output_binned_contig_name;
         string workspace_name;
 
         string search_engine;

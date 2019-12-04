@@ -49,7 +49,7 @@ class DASToolUtil:
         log('Start validating run_kb_das_tool params')
 
         # check for required parameters
-        for p in ['assembly_ref', 'binned_contig_names', 'workspace_name']:
+        for p in ['assembly_ref', 'input_binned_contig_names', 'output_binned_contig_name', 'workspace_name']:
             if p not in params:
                 raise ValueError('"{}" parameter is required, but missing'.format(p))
 
@@ -71,7 +71,7 @@ class DASToolUtil:
         """
         run_command: run command and print result
         """
-        os.chdir(self.scratch)
+        #os.chdir(self.scratch)
         log('Start executing command:\n{}'.format(command))
         log('Command is running from:\n{}'.format(self.scratch))
         pipe = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
@@ -160,7 +160,7 @@ class DASToolUtil:
 
         return output_files
 
-    def generate_html_report(self, result_directory, assembly_ref, binned_contig_obj_ref, header):
+    def generate_html_report(self, result_directory, assembly_ref, binned_contig_obj_ref):
         """
         generate_html_report: generate html summary report
         """
@@ -251,6 +251,71 @@ class DASToolUtil:
 
         return report_output
 
+    def rename_and_standardize_bin_names(self):
+        """
+        generate_command: generate renamed bins
+        """
+        log("\n\nRunning rename_and_standardize_bin_names")
+        path_to_result_bins = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY, "das_tool_output_dir_DASTool_bins")
+        for dirname, subdirs, files in os.walk(path_to_result_bins):
+            for file in files:
+                if file.endswith('.fa'):
+                    os.rename(os.path.abspath(path_to_result_bins) + '/' +
+                              file, os.path.abspath(path_to_result_bins) + '/bin.' +
+                              file.split('.')[-2].zfill(3) + '.fasta')  # need to change to 4 digits
+
+
+
+    def make_binned_contig_summary_file_for_binning_apps(self, task_params):
+        """
+        generate_command: generate binned contig summary command
+        """
+        log("\n\nRunning make_binned_contig_summary_file_for_binning_apps")
+        result_directory = task_params['result_directory']
+        path_to_result_bins = '{}/{}/'.format(result_directory, task_params['bin_result_directory'])
+        path_to_summary_file = path_to_result_bins + 'binned_contig.summary'
+        with open(path_to_summary_file, 'w+') as f:
+            f.write("Bin name\tCompleteness\tGenome size\tGC content\n")
+            for dirname, subdirs, files in os.walk(path_to_result_bins):
+                for file in files:
+                    if file.endswith('.fasta'):
+                        genome_bin_fna_file = os.path.join(path_to_result_bins, file)
+                        bbstats_output_file = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY,
+                                                           genome_bin_fna_file).split('.fasta')[0] + ".bbstatsout"
+                        bbstats_output = self.generate_stats_for_genome_bins(task_params,
+                                                                             genome_bin_fna_file,
+                                                                             bbstats_output_file)
+                        f.write('{}\t0\t{}\t{}\n'.format(genome_bin_fna_file.split("/")[-1],
+                                                         bbstats_output['contig_bp'],
+                                                         bbstats_output['gc_avg']))
+        f.close()
+        log('Finished make_binned_contig_summary_file_for_binning_apps function')
+
+    #
+    # def make_binned_contig_summary_file_for_binning_apps(self, task_params):
+    #     """
+    #     generate_command: generate binned contig summary command
+    #     """
+    #     log("\n\nRunning make_binned_contig_summary_file_for_binning_apps")
+    #     path_to_result = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY, "das_tool_output_dir_DASTool_bins")
+    #     path_to_summary_file = path_to_result + '/binned_contig.summary'
+    #     with open(path_to_summary_file, 'w+') as f:
+    #         f.write("Bin name\tCompleteness\tGenome size\tGC content\n")
+    #         for dirname, subdirs, files in os.walk(path_to_result):
+    #             for file in files:
+    #                 if file.endswith('.fasta'):
+    #                     genome_bin_fna_file = os.path.join(path_to_result, file)
+    #                     bbstats_output_file = os.path.join(path_to_result,
+    #                                                        genome_bin_fna_file).split('.fasta')[0] + ".bbstatsout"
+    #                     bbstats_output = self.generate_stats_for_genome_bins(task_params,
+    #                                                                          genome_bin_fna_file,
+    #                                                                          bbstats_output_file)
+    #                     f.write('{}\t0\t{}\t{}\n'.format(genome_bin_fna_file.split("/")[-1],
+    #                                                      bbstats_output['contig_bp'],
+    #                                                      bbstats_output['gc_avg']))
+    #     f.close()
+    #     log('Finished make_binned_contig_summary_file_for_binning_apps function')
+    #
 
     def generate_stats_for_genome_bins(self, task_params, genome_bin_fna_file, bbstats_output_file):
         """
@@ -304,35 +369,9 @@ class DASToolUtil:
                 'gc_std': gc_std
                 }
 
-
-    def make_binned_contig_summary_file_for_binning_apps(self, task_params):
-        """
-        generate_command: generate binned contig summary command
-        """
-        log("\n\nRunning make_binned_contig_summary_file_for_binning_apps")
-        result_directory = task_params['result_directory']
-        path_to_result_bins = '{}/{}/'.format(result_directory, task_params['bin_result_directory'])
-        path_to_summary_file = path_to_result_bins + 'binned_contig.summary'
-        with open(path_to_summary_file, 'w+') as f:
-            f.write("Bin name\tCompleteness\tGenome size\tGC content\n")
-            for dirname, subdirs, files in os.walk(path_to_result_bins):
-                for file in files:
-                    if file.endswith('.fasta'):
-                        genome_bin_fna_file = os.path.join(path_to_result_bins, file)
-                        bbstats_output_file = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY,
-                                                           genome_bin_fna_file).split('.fasta')[0] + ".bbstatsout"
-                        bbstats_output = self.generate_stats_for_genome_bins(task_params,
-                                                                             genome_bin_fna_file,
-                                                                             bbstats_output_file)
-                        f.write('{}\t0\t{}\t{}\n'.format(genome_bin_fna_file.split("/")[-1],
-                                                         bbstats_output['contig_bp'],
-                                                         bbstats_output['gc_avg']))
-        f.close()
-        log('Finished make_binned_contig_summary_file_for_binning_apps function')
-
     def generate_das_tool_input_files_and_commands_from_binned_contigs(self, params):
         #params['binned_contig_list_file'] = binned_contig_list_file
-        binned_contig_names = params['binned_contig_names']
+        binned_contig_names = params['input_binned_contig_names']
         trimmed_binned_contig_name_list = []
         contig_to_bin_file_name_list = []
         for input_ref in binned_contig_names:
@@ -346,6 +385,7 @@ class DASToolUtil:
             contig_to_bin_file_name = "{}_contigs_to_bins.tsv".format(trimmed_binned_contig_name)
             contig_to_bin_file_name_list.append(contig_to_bin_file_name)
 
+
             f = open(contig_to_bin_file_name, "w+")
             for bin in bins:
                 bin_id = bin.get('bid')
@@ -354,6 +394,10 @@ class DASToolUtil:
                 for contig_id, contig_value in contigs.items():
                     f.write("{}\t{}.{}\n".format(contig_id, trimmed_binned_contig_name, trimmed_bin_id))
             f.close()
+        #contig_to_bin_file_name_list = self.BINNER_RESULT_DIRECTORY + contig_to_bin_file_name
+        # temp = str(self.BINNER_RESULT_DIRECTORY) + '/'
+        # contig_to_bin_file_name_list = [temp + s for s in contig_to_bin_file_name_list]
+
         return (trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
 
 
@@ -373,7 +417,7 @@ class DASToolUtil:
         command += '-i {} '.format(contig_to_bin_file_name_list)
         command += '-l {} '.format(trimmed_binned_contig_name_list)
         command += '-c {} '.format(params.get('contig_file_path'))
-        command += '-o ./ '
+        command += '-o {} '.format(self.BINNER_RESULT_DIRECTORY)
         command += '--search_engine {} '.format(params.get('search_engine'))
         command += '--score_threshold {} '.format(params.get('score_threshold'))
         command += '--duplicate_penalty {} '.format(params.get('duplicate_penalty'))
@@ -394,7 +438,8 @@ class DASToolUtil:
 
         required params:
             assembly_ref: Metagenome assembly object reference
-            binned_contig_name: list of BinnedContig objects
+            input_binned_contig_names: list of BinnedContig objects
+            output_binned_contig_name: output BinnedContig object name
             workspace_name: the name of the workspace it gets saved to.
 
         optional params:
@@ -451,31 +496,40 @@ class DASToolUtil:
 
         #run concoct
         command = self.generate_das_tool_command(params, trimmed_binned_contig_name_list, contig_to_bin_file_name_list)
-        log('Working dir is {}'.format(result_directory))
-        log('Working dir is {}'.format(os.getcwd()))
-
-
+        log('\nWorking dir is {}'.format(result_directory))
+        log('\nWorking dir is {}'.format(os.getcwd()))
+        log('Changing working dir to {}'.format(result_directory))
+        os.chdir(result_directory)
         self.run_command(command)
 
+        self.rename_and_standardize_bin_names()
 
-        # generate_binned_contig_param = {
-        #     'file_directory': result_directory,
-        #     'assembly_ref': params.get('assembly_ref'),
-        #     'binned_contig_name': params.get('binned_contig_name'),
-        #     'workspace_name': params.get('workspace_name')
-        # }
-        #
-        # binned_contig_obj_ref = self.mgu.file_to_binned_contigs(
-        #                             generate_binned_contig_param).get('binned_contig_obj_ref')
-        #
-        # reportVal = self.generate_report(binned_contig_obj_ref, result_directory, params)
+        os.chdir(self.scratch)
 
-        binned_contig_obj_ref = 'test'
+        task_params = {}
+        task_params['result_directory'] = os.path.join(self.scratch)
+        task_params['bin_result_directory'] = os.path.join(self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins")
+        self.make_binned_contig_summary_file_for_binning_apps(task_params)
+
+        test = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins")
+        print("\n\ntest is: {}".format(test))
+        generate_binned_contig_param = {
+            'file_directory': os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins"),
+            'assembly_ref': params.get('assembly_ref'),
+            'binned_contig_name': params.get('output_binned_contig_name'),
+            'workspace_name': params.get('workspace_name')
+        }
+
+        binned_contig_obj_ref = self.mgu.file_to_binned_contigs(
+                                    generate_binned_contig_param).get('binned_contig_obj_ref')
+
+        reportVal = self.generate_report(binned_contig_obj_ref, params)
+
         returnVal = {
-            'result_directory': result_directory,
+            'result_directory': os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY),
             'binned_contig_obj_ref': binned_contig_obj_ref
         }
 
-        #returnVal.update(reportVal)
+        returnVal.update(reportVal)
 
         return returnVal

@@ -33,7 +33,12 @@ parameters :
         short-hint : Metagenome assembly object
         long-hint  : Metagenome assembly that you want to bin
 
-    binned_contig_name :
+    input_binned_contig_names :
+        ui-name : Input Binned Contigs
+        short-hint : Input BinnedContig object names
+        long-hint  : The name of the input bin objects
+
+    output_binned_contig_name :
         ui-name : Input Binned Contigs
         short-hint : Input BinnedContig object names
         long-hint  : The name of the input bin objects
@@ -98,14 +103,6 @@ description : |
     <p><b><i>Output Object:</i></b>The BinnedContig Object represents the directory of binned contigs created by CONCOCT. This object can be used for downstream analysis.</p>
     <p><b><i>Output Bin Summary Report:</i></b>The number of bins produced, the number of contigs that were binned and the total number of contigs in the assembly.</p>
     <p><b><i>Downloadable files:</i></b> The enitre output of the CONCOCT run may be downloaded as a zip file. This zip file also contains a table of read-depth coverage per contig ("*.depth.txt")</p>
-    <p><b><u>column definitions for *.depth.txt file</u></p>
-    <table style="width:50%">
-    <tr><td>1. contig name</td></tr>
-    <tr><td>2. contig length</td></tr>
-    <tr><td>3. total average depth (all libraries)</td></tr>
-    <tr><td>4. library 1 depth</td></tr>
-    <tr><td>5. library 1 variance</td></tr>
-    <tr><td>6. next library ... etc</td></tr></table>
 
 publications:
     -
