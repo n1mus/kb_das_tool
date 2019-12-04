@@ -39,9 +39,9 @@ parameters :
         long-hint  : The name of the input bin objects
 
     output_binned_contig_name :
-        ui-name : Input Binned Contigs
-        short-hint : Input BinnedContig object names
-        long-hint  : The name of the input bin objects
+        ui-name : Output Binned Contigs
+        short-hint : Output BinnedContig object name
+        long-hint  : The name of the output bin object
 
     search_engine :
         ui-name : Gene Identification Tool
