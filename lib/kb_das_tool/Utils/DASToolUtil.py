@@ -25,7 +25,7 @@ def log(message, prefix_newline=False):
 class DASToolUtil:
     DASTOOL_THREADS=2
     BINNER_RESULT_DIRECTORY = 'das_tool_output_dir'
-    BINNER_BIN_RESULT_DIR = 'final_bins'
+    BINNER_BIN_RESULT_DIR = 'das_tool_output_dir_DASTool_bins'
 
 
     def __init__(self, config):
