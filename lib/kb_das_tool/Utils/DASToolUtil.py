@@ -382,10 +382,10 @@ class DASToolUtil:
         contig_to_bin_file_name_list = []
         for input_ref in binned_contig_names:
             #print("\n\nINFO {}".format(input_ref['binned_contig_obj_ref'])['data'][0])
-            print("\n\ninput_ref: {}".format(input_ref))
+            print("\n\ninput_ref: {}".format([input_ref['binned_contig_obj_ref']]))
 
             binned_contig = self.dfu.get_objects({'object_refs':
-                                                 [input_ref[0]]})
+                                                 [input_ref['binned_contig_obj_ref']]})
             print("\n\nbinned_contig: {}".format(binned_contig))
             print("\n\nbinned_contig type: {}".format(type(binned_contig)))
             binned_contig_name = binned_contig.get('info')[1]
