@@ -385,7 +385,7 @@ class DASToolUtil:
             print("\n\ninput_ref: {}".format(input_ref))
 
             binned_contig = self.dfu.get_objects({'object_refs':
-                                                 [input_ref['binned_contig_obj_ref']]})
+                                                 [input_ref[0]]})
             print("\n\nbinned_contig: {}".format(binned_contig))
             print("\n\nbinned_contig type: {}".format(type(binned_contig)))
             binned_contig_name = binned_contig.get('info')[1]
