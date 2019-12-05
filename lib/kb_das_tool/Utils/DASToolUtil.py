@@ -377,10 +377,14 @@ class DASToolUtil:
     def generate_das_tool_input_files_and_commands_from_binned_contigs(self, params):
         #params['binned_contig_list_file'] = binned_contig_list_file
         binned_contig_names = params['input_binned_contig_names']
+        print("\n\nbinned_contig_names: {}".format(binned_contig_names))
         trimmed_binned_contig_name_list = []
         contig_to_bin_file_name_list = []
         for input_ref in binned_contig_names:
-            log("\n\nINFO {}".format([input_ref['binned_contig_obj_ref']])[0][0])
+            #print("\n\nINFO {}".format(input_ref['binned_contig_obj_ref'])['data'][0])
+            print("\n\ninput_ref: {}".format(input_ref))
+            print("\n\ninput_ref['binned_contig_obj_ref']: {}".format(input_ref['binned_contig_obj_ref']))
+
             binned_contig = self.dfu.get_objects({'object_refs':
                                                  [input_ref['binned_contig_obj_ref']]})['data'][0]
             binned_contig_name = binned_contig.get('info')[1]
