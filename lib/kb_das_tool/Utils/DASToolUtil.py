@@ -381,16 +381,10 @@ class DASToolUtil:
         trimmed_binned_contig_name_list = []
         contig_to_bin_file_name_list = []
         for input_ref in binned_contig_names:
-            #print("\n\nINFO {}".format(input_ref['binned_contig_obj_ref'])['data'][0])
-            print("\n\ninput_ref: {}".format([input_ref]))
-            #print("\n\ninput_ref['binned_contig_obj_ref']: {}".format([input_ref['binned_contig_obj_ref']]))
-            # temp = self.dfu.get_objects({'object_refs':
-            #                                      [input_ref['binned_contig_obj_ref']]})
-            # print("\n\ntemp: {}".format(temp))
-            binned_contig = self.dfu.get_objects({'object_refs':
-                                                 [input_ref]})['data'][0]
-            print("\n\nbinned_contig: {}".format(binned_contig))
-            print("\n\nbinned_contig type: {}".format(type(binned_contig)))
+            # next line needed for testing
+            # binned_contig = self.dfu.get_objects({'object_refs': [input_ref['binned_contig_obj_ref']]})['data'][0]
+            # next line needed in production only
+            binned_contig = self.dfu.get_objects({'object_refs': [input_ref]})['data'][0]
             binned_contig_name = binned_contig.get('info')[1]
             binned_contig_data = binned_contig.get('data')
             bins = binned_contig_data.get('bins')
@@ -523,10 +517,13 @@ class DASToolUtil:
         task_params = {}
         task_params['result_directory'] = os.path.join(self.scratch)
         task_params['bin_result_directory'] = os.path.join(self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins")
+
+        # check to make sure bins were generated, otherwise no need to run the rest
+        if any(File.endswith(".fa") for File in os.listdir(task_params['bin_result_directory'])):
+            raise AssertionError('No bins produced - skipping the creation of a new BinnedContig object')
+
         self.make_binned_contig_summary_file_for_binning_apps(task_params)
 
-        test = os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins")
-        print("\n\ntest is: {}".format(test))
         generate_binned_contig_param = {
             'file_directory': os.path.join(self.scratch, self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins"),
             'assembly_ref': params.get('assembly_ref'),
