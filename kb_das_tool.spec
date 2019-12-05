@@ -16,7 +16,8 @@ module kb_das_tool {
     /*
         required params:
         assembly_ref: Genome assembly object reference
-        binned_contig_names: list of BinnedContig object names
+        input_binned_contig_names: list of BinnedContigs object names
+        output_binned_contig_name: output of BinnedContig names
         workspace_name: the name of the workspace it gets saved to.
 
         optional params:
