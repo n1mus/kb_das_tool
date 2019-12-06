@@ -85,24 +85,21 @@ parameters :
 
 description : |
     <p>DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly.</p>
-
-    <p>CONCOCT uses nucleotide composition information and source strain abundance (measured by depth-of-coverage by aligning the reads to the contigs) to perform binning.</p>
     <p><hr></p>
     <p><hr></p>
     <p><i>Implemented for KBase by <a href="mailto:sjungbluth@lbl.gov">Sean Jungbluth(sjungbluth@lbl.gov)</a></i></p>
     <p><hr></p>
-    <p>CONCOCT takes a metagenome assembly and the reads that produced the assembly and organizes the contigs into putative genomes, called "bins".</p>
+    <p>DAS Tool takes metagenome "bins" generated from the same assembly, but using different genome binning tools, and optimizes their content using a dereplication, aggregation and scoring strategy.</p>
     <p><hr></p>
     <p><b>Configuration:</b></p>
-    <p><b><i>Assembly Object:</i></b> The Assembly object is a collection of assembled genome fragments, called "contigs".  These are the items that CONCOCT will bin.  Currently only a single Assembly object is accepted by the CONCOCT App.</p>
-    <p><b><i>BinnedContig Object Name:</i></b> The BinnedContig Object represents the directory of binned contigs created by CONCOCT. This object can be used for downstream analysis</p>
-    <p><b><i>Read Library Object:</i></b> The read libraries are aligned to the assembly using bbmap, and provide the abundance information for each contig that roughly follows the species abundance.</p>
-    <p><b><i>Minimum Contig Length:</i></b> Contigs that are too short may slow down analysis and not give statistically meaningful nucleotide composition profiles.  A value of 1000 - 2500 bp is a reasonable cutoff.</p>
+    <p><b><i>Assembly Object:</i></b> The Assembly object is a collection of assembled genome fragments, called "contigs".  These are part of the input file required for DAS Tool to run.  Currently only a single Assembly object is accepted by the DAS Tool App.</p>
+    <p><b><i>Input BinnedContig Object Names:</i></b> The BinnedContig Objects represents the different genome binning tool output binned contigs to be used for input to DAS Tool. </p>
+    <p><b><i>Output BinnedContig Object Name:</i></b> The output BinnedContig Object is produced by DAS Tool.</p>
     <p><hr></p>
     <p><b>Output:</b></p>
-    <p><b><i>Output Object:</i></b>The BinnedContig Object represents the directory of binned contigs created by CONCOCT. This object can be used for downstream analysis.</p>
+    <p><b><i>Output Object:</i></b>The BinnedContig Object represents the directory of binned contigs created by DAS Tool. This object can be used for downstream analysis.</p>
     <p><b><i>Output Bin Summary Report:</i></b>The number of bins produced, the number of contigs that were binned and the total number of contigs in the assembly.</p>
-    <p><b><i>Downloadable files:</i></b> The enitre output of the CONCOCT run may be downloaded as a zip file. This zip file also contains a table of read-depth coverage per contig ("*.depth.txt")</p>
+    <p><b><i>Downloadable files:</i></b> The enitre output of the DAS Tool run may be downloaded as a zip file. </p>
 
 publications:
     -
