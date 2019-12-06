@@ -73,16 +73,6 @@ parameters :
         short-hint : Create binning performance plots (default yes)
         long-hint  : Create binning performance plots (default yes)
 
-    write_bins :
-        ui-name : Write Bins
-        short-hint : Export bins as fasta files (default yes)
-        long-hint  : Export bins as fasta files (default yes)
-
-    write_unbinned :
-        ui-name : Write Unbinned
-        short-hint : Export unbinned as fasta file (default no)
-        long-hint  : Export unbinned as fasta file (default no)
-
 description : |
     <p>DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly.</p>
     <p><hr></p>

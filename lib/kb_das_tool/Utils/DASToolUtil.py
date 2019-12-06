@@ -432,8 +432,8 @@ class DASToolUtil:
         command += '--megabin_penalty {} '.format(params.get('megabin_penalty'))
         command += '--write_bin_evals {} '.format(params.get('write_bin_evals'))
         command += '--create_plots {} '.format(params.get('create_plots'))
-        command += '--write_bins {} '.format(params.get('write_bins'))
-        command += '--write_unbinned {} '.format(params.get('write_unbinned'))
+        command += '--write_bins 1 '
+        command += '--write_unbinned 0 '
         command += '-t {}'.format(self.DASTOOL_THREADS)
 
         log('Generated das_tool command: {}'.format(command))
@@ -519,7 +519,7 @@ class DASToolUtil:
         task_params['bin_result_directory'] = os.path.join(self.BINNER_RESULT_DIRECTORY , "das_tool_output_dir_DASTool_bins")
 
         # check to make sure bins were generated, otherwise no need to run the rest
-        if not os.path.exists(task_params['bin_result_directory'])):
+        if not os.path.exists(task_params['bin_result_directory']):
             raise AssertionError('No bins produced - skipping the creation of a new BinnedContig object')
 
         self.make_binned_contig_summary_file_for_binning_apps(task_params)

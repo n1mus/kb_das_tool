@@ -127,30 +127,6 @@
               "checked_value": 1,
               "unchecked_value": 0
             }
-        },
-        {
-          "id": "write_bins",
-          "optional": false,
-          "advanced": true,
-          "allow_multiple": false,
-          "default_values": [ 1 ],
-          "field_type": "checkbox",
-          "checkbox_options": {
-              "checked_value": 1,
-              "unchecked_value": 0
-            }
-        },
-        {
-          "id": "write_unbinned",
-          "optional": false,
-          "advanced": true,
-          "allow_multiple": false,
-          "default_values": [ 0 ],
-          "field_type": "checkbox",
-          "checkbox_options": {
-              "checked_value": 1,
-              "unchecked_value": 0
-            }
         }
     ],
     "behavior": {
@@ -200,14 +176,6 @@
                 {
                     "input_parameter": "create_plots",
                     "target_property": "create_plots"
-                },
-                {
-                    "input_parameter": "write_bins",
-                    "target_property": "write_bins"
-                },
-                {
-                    "input_parameter": "write_unbinned",
-                    "target_property": "write_unbinned"
                 }
             ],
             "output_mapping": [

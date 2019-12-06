@@ -266,7 +266,5 @@ class kb_das_toolTest(unittest.TestCase):
                                                           'duplicate_penalty': 0.6,
                                                           'megabin_penalty': 0.5,
                                                           'write_bin_evals': 1,
-                                                          'create_plots': 1,
-                                                          'write_bins': 1,
-                                                          'write_unbinned': 0
+                                                          'create_plots': 1
                                                           })
