@@ -7,7 +7,9 @@ tooltip  : Optimize genome bins using a dereplication, aggregation and scoring s
 
 icon: dastool.png
 
-screenshots: []
+screenshots:
+    - dastool-logo.png
+    - dastool-output.png
 
 #
 # define a set of similar methods that might be useful to the user
