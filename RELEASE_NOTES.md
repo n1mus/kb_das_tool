@@ -6,6 +6,10 @@ ToDo
 * Update documentation and inline comments
 * Add pdf files to reports
 
+1.0.1
+-----
+* UI tweaks
+
 1.0.0
 -----
 * Initial release

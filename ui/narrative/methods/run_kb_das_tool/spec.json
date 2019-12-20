@@ -1,5 +1,5 @@
 {
-    "ver": "1.0.0",
+    "ver": "1.0.1",
     "authors": [
         "seanjungbluth"
     ],
@@ -7,8 +7,7 @@
     "visible" : true,
     "categories": ["active","assembly","communities"],
     "widgets": {
-        "input": "kbaseNarrativeMethodInput",
-        "output" : "kbaseBinnedContigs"
+        "input": "kbaseNarrativeMethodInput"
     },
     "parameters": [
         {

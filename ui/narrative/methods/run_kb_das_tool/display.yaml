@@ -33,12 +33,12 @@ parameters :
     assembly_ref :
         ui-name : Assembly
         short-hint : Metagenome assembly object
-        long-hint  : Metagenome assembly that you want to bin
+        long-hint  : Input metagenome assembly to be used for binning
 
     input_binned_contig_names :
         ui-name : Input Binned Contigs
         short-hint : Input BinnedContig object names
-        long-hint  : The name of the input bin objects
+        long-hint  : The name of the input BinnedContig objects
 
     output_binned_contig_name :
         ui-name : Output Binned Contigs
@@ -104,3 +104,26 @@ publications:
         display-text : |
             DAS_Tool source:
         link: https://github.com/cmks/DAS_Tool
+
+    -
+        pmid: 20211023
+        display-text: |
+            Hyatt D, Chen G-L, LoCascio PF, Land ML, Larimer FW, Hauser LJ. Prodigal: prokaryotic gene recognition and translation initiation site identification. BMC Bioinformatics. 2010;11: 119. doi:10.1186/1471-2105-11-119
+        link: https://www.ncbi.nlm.nih.gov/pubmed/20211023
+
+    -
+        pmid: 20003500
+        display-text: |
+            Camacho C, Coulouris G, Avagyan V, Ma N, Papadopoulos J, Bealer K, Madden TL. BLAST+: architecture and applications. BMC Bioinformatics. 2009;10: 421. doi:10.1186/1471-2105-10-421
+        link: https://www.ncbi.nlm.nih.gov/pubmed/20211023
+
+    -
+        pmid: 25402007
+        display-text: |
+            Buchfink B, Xie C, Huson DH. Fast and sensitive protein alignment using DIAMOND. Nature Methods. 2015;12: 59-60. doi:10.1038/nmeth.3176
+        link: https://www.ncbi.nlm.nih.gov/pubmed/25402007
+
+    -
+        display-text: |
+            R: A Language and Environment for Statistical Computing:
+        link: http://www.R-project.org/
