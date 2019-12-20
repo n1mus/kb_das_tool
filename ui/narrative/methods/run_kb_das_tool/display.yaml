@@ -124,6 +124,16 @@ publications:
         link: https://www.ncbi.nlm.nih.gov/pubmed/25402007
 
     -
+        display-text : |
+            Pullseq:
+        link: https://github.com/bcthomas/pullseq
+
+    -
         display-text: |
             R: A Language and Environment for Statistical Computing:
         link: http://www.R-project.org/
+
+    -
+        display-text: |
+            Ruby: A Programmers Best Friend:
+        link: https://www.ruby-lang.org
