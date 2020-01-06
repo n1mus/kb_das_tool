@@ -383,9 +383,9 @@ class DASToolUtil:
         print("\n\nbinned_contig_names is {}".format(binned_contig_names))
         for input_ref in binned_contig_names:
             # next line needed for testing
-            # binned_contig = self.dfu.get_objects({'object_refs': [input_ref['binned_contig_obj_ref']]})['data'][0]
+            binned_contig = self.dfu.get_objects({'object_refs': [input_ref['binned_contig_obj_ref']]})['data'][0]
             # next line needed in production only
-            binned_contig = self.dfu.get_objects({'object_refs': [input_ref]})['data'][0]
+            #binned_contig = self.dfu.get_objects({'object_refs': [input_ref]})['data'][0]
             binned_contig_name = binned_contig.get('info')[1]
             binned_contig_data = binned_contig.get('data')
             bins = binned_contig_data.get('bins')
