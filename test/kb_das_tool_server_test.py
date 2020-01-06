@@ -247,6 +247,8 @@ class kb_das_toolTest(unittest.TestCase):
         return self.__class__.ctx
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
+
+    # !!!!Uncomment line 386 and comment out line 389 for testing!!!
     def test_kb_das_tool(self):
         # Prepare test objects in workspace if needed using
         # self.getWsClient().save_objects({'workspace': self.getWsName(),

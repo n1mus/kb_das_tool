@@ -377,15 +377,14 @@ class DASToolUtil:
     def generate_das_tool_input_files_and_commands_from_binned_contigs(self, params):
         #params['binned_contig_list_file'] = binned_contig_list_file
         binned_contig_names = params['input_binned_contig_names']
-        print("\n\nbinned_contig_names: {}".format(binned_contig_names))
         trimmed_binned_contig_name_list = []
         contig_to_bin_file_name_list = []
-        print("\n\nbinned_contig_names is {}".format(binned_contig_names))
         for input_ref in binned_contig_names:
             # next line needed for testing
-            binned_contig = self.dfu.get_objects({'object_refs': [input_ref['binned_contig_obj_ref']]})['data'][0]
+            # binned_contig = self.dfu.get_objects({'object_refs': [input_ref['binned_contig_obj_ref']]})['data'][0]
+
             # next line needed in production only
-            #binned_contig = self.dfu.get_objects({'object_refs': [input_ref]})['data'][0]
+            binned_contig = self.dfu.get_objects({'object_refs': [input_ref]})['data'][0]
             binned_contig_name = binned_contig.get('info')[1]
             binned_contig_data = binned_contig.get('data')
             bins = binned_contig_data.get('bins')
@@ -414,12 +413,8 @@ class DASToolUtil:
         """
         generate_command: generate concoct params
         """
-        # print("params" + str(params))
-        # params['contig_file_path'] = self.retrieve_and_clean_assembly(params)
-        # print("params" + str(params))
 
         print("\n\nRunning generate_das_tool_command")
-
 
         command = 'DAS_Tool '
 
