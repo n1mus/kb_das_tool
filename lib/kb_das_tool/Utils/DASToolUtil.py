@@ -380,6 +380,7 @@ class DASToolUtil:
         print("\n\nbinned_contig_names: {}".format(binned_contig_names))
         trimmed_binned_contig_name_list = []
         contig_to_bin_file_name_list = []
+        print("\n\nbinned_contig_names is {}".format(binned_contig_names))
         for input_ref in binned_contig_names:
             # next line needed for testing
             # binned_contig = self.dfu.get_objects({'object_refs': [input_ref['binned_contig_obj_ref']]})['data'][0]
