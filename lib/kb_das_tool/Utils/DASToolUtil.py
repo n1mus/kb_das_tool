@@ -170,7 +170,7 @@ class DASToolUtil:
         """
 
         log('Start generating html report')
-        html_report = list()
+        #html_report = list()
 
         output_directory = os.path.join(self.scratch, str(uuid.uuid4()))
         self.mkdir_p(output_directory)
@@ -184,9 +184,17 @@ class DASToolUtil:
                                                           binned_contig_obj_ref,
                                                           result_directory)
 
+        # get pdfs
+        pdf_filename_l = [f for f in os.listdir(self.BINNER_RESULT_DIRECTORY) if f.endswith('.pdf')]
+        assert len(pdf_filename_l) == 2
+ 
+
         Overview_Content += '<p>Binned contigs: {}</p>'.format(binned_contig_count)
         Overview_Content += '<p>Input contigs: {}</p>'.format(input_contig_count)
         Overview_Content += '<p>Number of bins: {}</p>'.format(total_bins_count)
+        for pdf_filename in pdf_filename_l:
+            Overview_Content += '\n<embed src="{}" width="1000px" height="700px">'.format(pdf_filename)
+            Overview_Content += '\n<embed src="{}" width="1000px" height="700px">'.format(pdf_filename)
 
         with open(result_file_path, 'w') as result_file:
             with open(os.path.join(os.path.dirname(__file__), 'report_template.html'),
@@ -198,11 +206,44 @@ class DASToolUtil:
                                                           Summary_Table_Content)
                 result_file.write(report_template)
 
+        # copy pdfs into html dir
+        for pdf_filename in pdf_filename_l:
+            shutil.copyfile(os.path.join(self.BINNER_RESULT_DIRECTORY, pdf_filename), os.path.join(output_directory, pdf_filename))
+
+        # save html dir to shock
+        def dir_to_shock(dir_path, name, description):
+            '''
+            For regular directories or html directories
+            
+            name - for regular directories: the name of the flat (zip) file returned to ui
+                   for html directories: the name of the html file
+            '''
+            dfu_fileToShock_ret = self.dfu.file_to_shock({
+                'file_path': dir_path,
+                'make_handle': 0,
+                'pack': 'zip',
+                })
+
+            dir_shockInfo = {
+                'shock_id': dfu_fileToShock_ret['shock_id'],
+                'name': name,
+                'description': description
+                }
+
+            return dir_shockInfo
+
+        html_shockInfo = dir_to_shock(output_directory, 'report.html', 'Report html for DAS tool')
+
+        """
         html_report.append({'path': result_file_path,
                             'name': os.path.basename(result_file_path),
                             'label': os.path.basename(result_file_path),
                             'description': 'HTML summary report for kb_concoct App'})
+
         return html_report
+        """
+
+        return [html_shockInfo]
 
 
     def generate_overview_info(self, assembly_ref, binned_contig_obj_ref, result_directory):

@@ -108,7 +108,7 @@ class kb_das_toolTest(unittest.TestCase):
         }
 
         # puts assembly object onto shock
-        cls.assembly_ref = cls.au.save_assembly_from_fasta(assembly_params)
+        cls.assembly_ref = "39039/4/1" #cls.au.save_assembly_from_fasta(assembly_params)
 
         print('\nDone uploading assembly')
 
@@ -261,7 +261,7 @@ class kb_das_toolTest(unittest.TestCase):
         # self.assertEqual(ret[...], ...) or other unittest methods
         ret = self.serviceImpl.run_kb_das_tool(self.ctx, {'assembly_ref': self.assembly_ref,
                                                           'workspace_name': self.wsName,
-                                                          'input_binned_contig_names': [self.concoct_genome_bin_ref, self.metabat_genome_bin_ref, self.maxbin_genome_bin_ref],
+                                                          'input_binned_contig_names': ["39039/3/1", "39039/2/1", "39039/5/1"],
                                                           'output_binned_contig_name': 'dastool.test.output',
                                                           'search_engine': 'diamond',
                                                           'score_threshold': 0.1,

@@ -1,0 +1,5 @@
+test_local
+.*.sw[a-z]
+*.py.bak*
+sdk.cfg
+*server_test.py
